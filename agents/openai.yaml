@@ -1,0 +1,4 @@
+interface:
+  display_name: "企业品牌展厅概念策划"
+  short_description: "两阶段生成企业品牌展厅需求诊断、故事线、动线与PPT提案脚本"
+  default_prompt: "Use $enterprise-showroom-concept to turn my brand and space materials into a two-stage enterprise showroom concept package."
