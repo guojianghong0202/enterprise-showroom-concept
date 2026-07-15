@@ -35,7 +35,10 @@ REQUIRED_SECTIONS = {
     "05_分区效果图提示词.md": ("## 展区提示词",),
     "06_来源与待确认清单.md": ("## 来源清单", "## 待确认问题"),
 }
-PLACEHOLDER_PATTERN = re.compile(r"\b(?:TODO|TBD|FIXME|PLACEHOLDER)\b|待补充", re.IGNORECASE)
+PLACEHOLDER_PATTERN = re.compile(
+    r"\b(?:TODO|TBD|FIXME|PLACEHOLDER)\b|待补充|【(?:填写|待填|待定)[^】]*】|【(?:项目|企业|客户)名称】",
+    re.IGNORECASE,
+)
 BOUNDARY_PATTERNS = {
     "可直接施工": "不得把概念方案描述为可直接施工",
     "施工图已完成": "不得声称已经完成施工图",
@@ -43,6 +46,8 @@ BOUNDARY_PATTERNS = {
     "精确预算": "不得输出精确预算结论",
     "工程结论": "不得输出未经专业确认的工程结论",
 }
+BOUNDARY_CLAUSE_SPLIT_PATTERN = re.compile(r"[，,；;。！？!?\n]+|(?:但是|但|然而|不过)")
+BOUNDARY_NEGATION_PATTERN = re.compile(r"(?:不是|并非|不构成|不作为|不代表|不提供|不输出|不得|不能|禁止)")
 
 
 def issue(level: str, code: str, message: str, file: str | None = None) -> dict[str, str]:
@@ -50,6 +55,20 @@ def issue(level: str, code: str, message: str, file: str | None = None) -> dict[
     if file:
         item["file"] = file
     return item
+
+
+def find_boundary_violations(content: str) -> list[tuple[str, str]]:
+    """Return affirmative boundary claims while ignoring explicit disclaimers."""
+    violations: list[tuple[str, str]] = []
+    for clause in BOUNDARY_CLAUSE_SPLIT_PATTERN.split(content):
+        for phrase, message in BOUNDARY_PATTERNS.items():
+            position = clause.find(phrase)
+            if position < 0:
+                continue
+            if BOUNDARY_NEGATION_PATTERN.search(clause[:position]):
+                continue
+            violations.append((phrase, message))
+    return violations
 
 
 def validate_package(root: Path, stage: str) -> dict[str, Any]:
@@ -67,9 +86,8 @@ def validate_package(root: Path, stage: str) -> dict[str, Any]:
             content = path.read_text(encoding="utf-8-sig")
             if PLACEHOLDER_PATTERN.search(content):
                 issues.append(issue("BLOCKER", "PLACEHOLDER_FOUND", "文件仍包含占位符", filename))
-            for phrase, message in BOUNDARY_PATTERNS.items():
-                if phrase in content:
-                    issues.append(issue("BLOCKER", "BOUNDARY_VIOLATION", message, filename))
+            for _, message in find_boundary_violations(content):
+                issues.append(issue("BLOCKER", "BOUNDARY_VIOLATION", message, filename))
             for heading in REQUIRED_SECTIONS[filename]:
                 if heading not in content:
                     issues.append(issue("BLOCKER", "REQUIRED_SECTION_MISSING", f"缺少章节：{heading}", filename))
