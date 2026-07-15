@@ -10,6 +10,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+try:
+    from .validation_common import print_json
+except ImportError:  # Direct script execution.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from validation_common import print_json
+
 
 PHASE1_FILES = (
     "01_需求诊断与证据台账.md",
@@ -235,7 +241,7 @@ def main() -> int:
     parser.add_argument("--stage", choices=("phase1", "phase2"), default="phase2")
     args = parser.parse_args()
     report = validate_package(args.package, args.stage)
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    print_json(report)
     return 1 if report["status"] == "FAIL" else 0
 
 

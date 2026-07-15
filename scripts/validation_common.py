@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -110,3 +111,14 @@ def load_json(path: Path) -> tuple[dict[str, Any] | None, dict[str, Any] | None]
 
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def print_json(data: dict[str, Any]) -> None:
+    """Write human-readable JSON to stdout as UTF-8 on every platform."""
+    text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+    buffer = getattr(sys.stdout, "buffer", None)
+    if buffer is not None:
+        buffer.write(text.encode("utf-8"))
+        buffer.flush()
+    else:
+        sys.stdout.write(text)

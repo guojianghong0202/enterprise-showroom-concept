@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,13 +13,13 @@ try:
     from .validate_concept_package import validate_package
     from .validate_design_model import validate_design_model
     from .validate_input_manifest import normalize_manifest, validate_manifest
-    from .validation_common import VALIDATOR_VERSION, load_json, status_from_summary, summarize_issues, write_json
+    from .validation_common import VALIDATOR_VERSION, load_json, print_json, status_from_summary, summarize_issues, write_json
 except ImportError:  # Direct script execution.
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from validate_concept_package import validate_package
     from validate_design_model import validate_design_model
     from validate_input_manifest import normalize_manifest, validate_manifest
-    from validation_common import VALIDATOR_VERSION, load_json, status_from_summary, summarize_issues, write_json
+    from validation_common import VALIDATOR_VERSION, load_json, print_json, status_from_summary, summarize_issues, write_json
 
 
 def aggregate_reports(reports: list[dict[str, Any]], *, stage: str, adapters: list[str] | None = None) -> dict[str, Any]:
@@ -79,7 +78,7 @@ def main() -> int:
     report = validate_project(args.package, args.stage)
     if not args.no_write and args.package.is_dir():
         write_json(args.package / "validation-report.json", report)
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    print_json(report)
     return 1 if report["status"] == "FAIL" else 0
 
 

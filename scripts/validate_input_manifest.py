@@ -11,10 +11,10 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from .validation_common import build_report, make_issue, valid_id
+    from .validation_common import build_report, make_issue, print_json, valid_id
 except ImportError:  # Direct script execution.
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from validation_common import build_report, make_issue, valid_id
+    from validation_common import build_report, make_issue, print_json, valid_id
 
 
 ALLOWED_SOURCE_TYPES = {
@@ -321,7 +321,7 @@ def main() -> int:
         else:
             report = validate_manifest(data, args.stage)
 
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    print_json(report)
     return 1 if report["status"] == "FAIL" else 0
 
 

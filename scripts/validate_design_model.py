@@ -11,10 +11,10 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from .validation_common import build_report, load_json, make_issue, valid_id
+    from .validation_common import build_report, load_json, make_issue, print_json, valid_id
 except ImportError:  # Direct script execution.
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from validation_common import build_report, load_json, make_issue, valid_id
+    from validation_common import build_report, load_json, make_issue, print_json, valid_id
 
 
 STORY_DIFFERENCE_FIELDS = (
@@ -457,7 +457,7 @@ def main() -> int:
         if model is None
         else validate_design_model(model, manifest, args.stage)
     )
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    print_json(report)
     return 1 if report["status"] == "FAIL" else 0
 
 

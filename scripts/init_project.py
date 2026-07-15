@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from .validation_common import load_json, write_json
+    from .validation_common import load_json, print_json, write_json
 except ImportError:  # Direct script execution.
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from validation_common import load_json, write_json
+    from validation_common import load_json, print_json, write_json
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -138,9 +138,9 @@ def main() -> int:
         else:
             target = initialize_phase2(args.output)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        print(json.dumps({"status": "FAIL", "message": str(exc)}, ensure_ascii=False, indent=2))
+        print_json({"status": "FAIL", "message": str(exc)})
         return 1
-    print(json.dumps({"status": "CREATED", "stage": args.stage, "project_dir": str(target)}, ensure_ascii=False, indent=2))
+    print_json({"status": "CREATED", "stage": args.stage, "project_dir": str(target)})
     return 0
 
 
