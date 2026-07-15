@@ -220,6 +220,13 @@ class InputManifestV2Tests(unittest.TestCase):
         report = validate_manifest(data, "phase1")
         self.assertIn("EVIDENCE_INVALID", {item["code"] for item in report["issues"]})
 
+    def test_low_space_confidence_is_visible_as_degradation_warning(self) -> None:
+        data = complete_v2_manifest()
+        data["space"]["confidence"] = "low"
+        report = validate_manifest(data, "phase1")
+        self.assertIn("SPACE_CONFIDENCE_LOW", {item["code"] for item in report["issues"]})
+        self.assertEqual(report["status"], "PASS_WITH_WARNINGS")
+
 
 if __name__ == "__main__":
     unittest.main()
