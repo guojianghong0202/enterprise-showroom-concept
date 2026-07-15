@@ -316,12 +316,49 @@ def validate_phase2_detail(model: dict[str, Any], manifest: dict[str, Any], issu
                 )
             )
 
-    expected = (manifest.get("project") or {}).get("expected_visit_minutes") or {}
-    expected_min, expected_max = expected.get("min"), expected.get("max")
+    project_expected = (manifest.get("project") or {}).get("expected_visit_minutes") or {}
+    audience_expected = {
+        audience.get("id"): audience.get("expected_visit_minutes")
+        for audience in manifest.get("audiences") or []
+        if isinstance(audience, dict)
+        and isinstance(audience.get("expected_visit_minutes"), dict)
+        and isinstance(audience["expected_visit_minutes"].get("min"), (int, float))
+        and isinstance(audience["expected_visit_minutes"].get("max"), (int, float))
+    }
     for index, route in enumerate(routes):
         duration = route.get("duration_minutes") or {}
+        if (
+            not isinstance(duration, dict)
+            or not isinstance(duration.get("min"), (int, float))
+            or not isinstance(duration.get("max"), (int, float))
+            or duration["min"] > duration["max"]
+        ):
+            issues.append(
+                make_issue(
+                    "BLOCKER",
+                    "ROUTE_DURATION_FORMAT_INVALID",
+                    "路线停留时长必须是包含有效 min/max 的对象。",
+                    json_path=f"routes[{index}].duration_minutes",
+                    related_ids=[route.get("id")] if route.get("id") else [],
+                )
+            )
+            continue
+        route_targets = [
+            audience_expected[audience_id]
+            for audience_id in route.get("audience_ids") or []
+            if audience_id in audience_expected
+        ]
+        expected = (
+            {
+                "min": min(item["min"] for item in route_targets),
+                "max": max(item["max"] for item in route_targets),
+            }
+            if route_targets
+            else project_expected
+        )
+        expected_min, expected_max = expected.get("min"), expected.get("max")
         if isinstance(expected_min, (int, float)) and isinstance(expected_max, (int, float)):
-            if duration.get("min", float("inf")) > expected_min or duration.get("max", float("-inf")) < expected_max:
+            if duration["min"] > expected_min or duration["max"] < expected_max:
                 issues.append(
                     make_issue(
                         "WARNING",
