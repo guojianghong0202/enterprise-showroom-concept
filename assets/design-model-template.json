@@ -1,0 +1,76 @@
+{
+  "schema_version": "2.0",
+  "project_id": "project-id",
+  "derived_from_manifest": "project-manifest.json",
+  "phase": "phase1",
+  "strategy": {
+    "audience_ids": [
+      "A01"
+    ],
+    "core_claim": "【填写总主张】",
+    "key_messages": []
+  },
+  "story_candidates": [
+    {
+      "id": "S01",
+      "title": "【填写候选一】",
+      "audience_ids": [
+        "A01"
+      ],
+      "proposition": "【填写叙事主张】",
+      "spatial_archetype": "【填写空间母题】",
+      "signature_exhibit": "【填写标志性展项】",
+      "emotional_arc": "【填写体验节奏】",
+      "visual_motif": "【填写视觉DNA】",
+      "evidence_ids": [],
+      "advantages": [],
+      "risks": []
+    },
+    {
+      "id": "S02",
+      "title": "【填写候选二】",
+      "audience_ids": [
+        "A01"
+      ],
+      "proposition": "【填写叙事主张】",
+      "spatial_archetype": "【填写空间母题】",
+      "signature_exhibit": "【填写标志性展项】",
+      "emotional_arc": "【填写体验节奏】",
+      "visual_motif": "【填写视觉DNA】",
+      "evidence_ids": [],
+      "advantages": [],
+      "risks": []
+    },
+    {
+      "id": "S03",
+      "title": "【填写候选三；降级为两条时说明原因】",
+      "audience_ids": [
+        "A01"
+      ],
+      "proposition": "【填写叙事主张】",
+      "spatial_archetype": "【填写空间母题】",
+      "signature_exhibit": "【填写标志性展项】",
+      "emotional_arc": "【填写体验节奏】",
+      "visual_motif": "【填写视觉DNA】",
+      "evidence_ids": [],
+      "advantages": [],
+      "risks": []
+    }
+  ],
+  "selected_story": null,
+  "space_program": {
+    "allocation_mode": null,
+    "placement_status": "conceptual"
+  },
+  "routes": [],
+  "zones": [],
+  "exhibits": [],
+  "visual_system": {},
+  "wayfinding_system": {},
+  "budget_strategies": [],
+  "accessibility_review": {},
+  "ppt_pages": [],
+  "assumptions": [],
+  "risks": [],
+  "open_questions": []
+}

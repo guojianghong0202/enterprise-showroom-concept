@@ -1,0 +1,17 @@
+{
+  "status": "NOT_RUN",
+  "final_status": "待验证",
+  "stage": "phase1",
+  "quality_score": null,
+  "summary": {
+    "blockers": 0,
+    "warnings": 0
+  },
+  "degradation_reasons": [],
+  "adapters": [
+    "generic"
+  ],
+  "validator_version": "2.0.0",
+  "validated_at": null,
+  "issues": []
+}

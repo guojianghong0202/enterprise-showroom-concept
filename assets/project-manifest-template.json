@@ -1,0 +1,49 @@
+{
+  "schema_version": "2.0",
+  "project": {
+    "id": "project-id",
+    "name": "【填写项目名称】",
+    "company_name": "【填写企业名称】",
+    "objective": "【填写建设目标】",
+    "expected_visit_minutes": {
+      "min": null,
+      "max": null
+    },
+    "budget_tier": "unknown",
+    "adapters": [
+      "generic"
+    ]
+  },
+  "audiences": [
+    {
+      "id": "A01",
+      "name": "【填写核心受众】",
+      "scenario": "unknown",
+      "core_question": "unknown",
+      "leave_memory": "unknown",
+      "desired_action": "unknown"
+    }
+  ],
+  "brand_materials": [],
+  "space": {
+    "area_sqm": null,
+    "ceiling_height_m": null,
+    "floor_plan": null,
+    "site_photos": [],
+    "entrances": [],
+    "exits": [],
+    "confidence": "unknown"
+  },
+  "constraints": [],
+  "storyline": {
+    "confirmed": false,
+    "selected_id": null,
+    "confirmed_at": null,
+    "confirmation_note": null
+  },
+  "evidence": [],
+  "design_references": [],
+  "conflicts": [],
+  "assumptions": [],
+  "open_questions": []
+}

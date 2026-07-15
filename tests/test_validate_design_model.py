@@ -155,6 +155,7 @@ class DesignModelV2Tests(unittest.TestCase):
     def test_hanging_reference_and_disconnected_zone_are_blocked(self) -> None:
         data = phase2_model()
         data["routes"][0]["zone_ids"].append("Z99")
+        data["zones"][0]["adjacent_to"] = []
         data["zones"][1]["adjacent_to"] = []
         report = validate_design_model(data, manifest(), "phase2")
         codes = {item["code"] for item in report["issues"]}
