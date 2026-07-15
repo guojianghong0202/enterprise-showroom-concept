@@ -24,6 +24,15 @@ class ValidateProjectTests(unittest.TestCase):
         self.assertEqual(report["issues"][1]["related_ids"], ["Z01"])
         self.assertEqual(report["adapters"], ["generic"])
 
+    def test_warning_only_report_is_marked_for_review(self) -> None:
+        report = aggregate_reports(
+            [{"issues": [{"level": "WARNING", "code": "CHECK", "message": "资料需复核"}]}],
+            stage="phase1",
+            adapters=["generic"],
+        )
+        self.assertEqual(report["status"], "PASS_WITH_WARNINGS")
+        self.assertEqual(report["final_status"], "可用但需复核")
+
     def test_golden_phase2_cli_passes_without_writing(self) -> None:
         fixture = ROOT / "tests" / "fixtures" / "golden-phase2"
         report_path = fixture / "validation-report.json"
