@@ -176,8 +176,24 @@ def validate_manifest(data: dict[str, Any], stage: str) -> dict[str, Any]:
                 "space",
             )
         )
-    if is_blank(space.get("floor_plan")):
+    floor_plan = space.get("floor_plan")
+    if is_blank(floor_plan):
         issues.append(issue("WARNING", "FLOOR_PLAN_MISSING", "缺少平面图，不能判断具体空间落位", "space.floor_plan"))
+    elif isinstance(floor_plan, dict):
+        inspection = " ".join(
+            str(floor_plan.get(field) or "")
+            for field in ("inspection_status", "read_status", "status")
+        ).strip()
+        unreviewed_markers = ("未收到", "未检查", "不可读", "缺失", "unknown")
+        if not inspection or any(marker in inspection for marker in unreviewed_markers):
+            issues.append(
+                issue(
+                    "WARNING",
+                    "FLOOR_PLAN_UNREVIEWED",
+                    "平面图条目存在，但文件尚未实际检查；只能输出候选关系与概念级空间判断",
+                    "space.floor_plan",
+                )
+            )
     if is_blank(space.get("entrances")) or is_blank(space.get("exits")):
         issues.append(
             issue(
