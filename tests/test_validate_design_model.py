@@ -183,6 +183,107 @@ class DesignModelV2Tests(unittest.TestCase):
         report = validate_design_model(data, manifest(), "phase2")
         self.assertIn("EXHIBIT_FIELD_MISSING", {item["code"] for item in report["issues"]})
 
+    def test_story_count_incomplete_and_similarity_are_blocked(self) -> None:
+        data = phase1_model()
+        data["story_candidates"] = [copy.deepcopy(data["story_candidates"][0])]
+        report = validate_design_model(data, manifest(), "phase1")
+        self.assertIn("STORY_CANDIDATE_COUNT_INVALID", {item["code"] for item in report["issues"]})
+
+        data = phase1_model()
+        data["story_candidates"][1] = copy.deepcopy(data["story_candidates"][0])
+        data["story_candidates"][1]["id"] = "S02"
+        data["story_candidates"][1]["visual_motif"] = "另一种色彩"
+        data["story_candidates"][0]["signature_exhibit"] = ""
+        report = validate_design_model(data, manifest(), "phase1")
+        codes = {item["code"] for item in report["issues"]}
+        self.assertIn("STORY_CANDIDATE_INCOMPLETE", codes)
+        self.assertIn("STORY_CANDIDATES_TOO_SIMILAR", codes)
+
+    def test_schema_phase_and_identifier_errors_are_blocked(self) -> None:
+        data = phase2_model()
+        data["schema_version"] = "1.0"
+        data["phase"] = "phase1"
+        data["story_candidates"][0]["id"] = "S1"
+        data["zones"][1]["id"] = "Z01"
+        data["routes"][0]["id"] = "route"
+        data["exhibits"][0]["id"] = "X1"
+        data["ppt_pages"][0]["id"] = "P1"
+        report = validate_design_model(data, manifest(), "phase2")
+        codes = {item["code"] for item in report["issues"]}
+        self.assertTrue({"DESIGN_SCHEMA_INVALID", "DESIGN_PHASE_MISMATCH", "ID_FORMAT_INVALID", "ID_DUPLICATE"} <= codes)
+
+    def test_selected_story_exhibit_and_ppt_references_must_exist(self) -> None:
+        data = phase2_model()
+        data["selected_story"] = "S99"
+        data["exhibits"][0]["zone_id"] = "Z99"
+        data["zones"][0]["exhibit_ids"] = ["X99"]
+        data["ppt_pages"][0]["story_id"] = "S99"
+        data["ppt_pages"][0]["exhibit_ids"] = ["X99"]
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertGreaterEqual([item["code"] for item in report["issues"]].count("REFERENCE_NOT_FOUND"), 5)
+
+    def test_exact_area_and_missing_area_modes_are_checked(self) -> None:
+        data = phase2_model()
+        data["space_program"]["allocation_mode"] = "exact"
+        data["zones"][0]["area_pct"] = 40
+        data["zones"][1]["area_pct"] = 40
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertIn("AREA_TOTAL_INVALID", {item["code"] for item in report["issues"]})
+
+        data = phase2_model()
+        data["space_program"]["allocation_mode"] = "range"
+        data["zones"][0].pop("area_range_pct")
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertIn("AREA_RANGE_MISSING", {item["code"] for item in report["issues"]})
+
+        data = phase2_model()
+        data["space_program"]["allocation_mode"] = "unknown"
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertIn("AREA_MODE_INVALID", {item["code"] for item in report["issues"]})
+
+    def test_route_endpoint_duration_zone_and_system_gaps_are_reported(self) -> None:
+        data = phase2_model()
+        data["routes"][0]["start"] = "错误入口"
+        data["routes"][0]["duration_minutes"] = {"min": 40, "max": 50}
+        data["zones"][0]["visual_direction"] = ""
+        data["zones"][1]["priority"] = "support"
+        data["ppt_pages"] = [data["ppt_pages"][1]]
+        data["visual_system"] = {}
+        data["wayfinding_system"] = {}
+        data["budget_strategies"] = []
+        data["accessibility_review"] = {}
+        report = validate_design_model(data, manifest(), "phase2")
+        codes = {item["code"] for item in report["issues"]}
+        self.assertTrue(
+            {
+                "ROUTE_ENDPOINT_INVALID",
+                "ROUTE_DURATION_MISMATCH",
+                "ZONE_FIELD_MISSING",
+                "KEY_ZONE_PPT_MAPPING_MISSING",
+                "VISUAL_SYSTEM_MISSING",
+                "WAYFINDING_SYSTEM_MISSING",
+                "BUDGET_STRATEGIES_MISSING",
+                "ACCESSIBILITY_REVIEW_MISSING",
+            }
+            <= codes
+        )
+
+    def test_invalid_exhibit_budget_tier_and_missing_selected_story_are_blocked(self) -> None:
+        data = phase2_model()
+        data["selected_story"] = None
+        data["exhibits"][0]["budget_tiers"] = ["premium"]
+        report = validate_design_model(data, manifest(), "phase2")
+        codes = {item["code"] for item in report["issues"]}
+        self.assertIn("SELECTED_STORY_MISSING", codes)
+        self.assertIn("BUDGET_TIER_INVALID", codes)
+
+    def test_malformed_route_and_page_items_are_reported_without_crashing(self) -> None:
+        data = phase2_model()
+        data["routes"].append("not-an-object")
+        data["ppt_pages"].append("not-an-object")
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertIn("OBJECT_INVALID", {item["code"] for item in report["issues"]})
+
 
 if __name__ == "__main__":
     unittest.main()
