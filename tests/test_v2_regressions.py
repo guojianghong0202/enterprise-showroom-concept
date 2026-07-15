@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
@@ -68,6 +69,29 @@ def issue_codes(report: dict) -> set[str]:
     return {item["code"] for item in report["issues"]}
 
 
+def add_structured_files(files: dict[str, str]) -> None:
+    files["project-manifest.json"] = json.dumps(
+        {
+            "schema_version": "2.0",
+            "audiences": [{"id": "A01"}],
+            "evidence": [{"id": "E001"}],
+            "design_references": [{"id": "D001"}],
+        },
+        ensure_ascii=False,
+    )
+    files["design-model.json"] = json.dumps(
+        {
+            "schema_version": "2.0",
+            "story_candidates": [{"id": "S01"}],
+            "routes": [{"id": "R01"}],
+            "zones": [{"id": "Z01", "priority": "key"}],
+            "exhibits": [{"id": "X01"}],
+            "ppt_pages": [{"id": "P01", "zone_ids": ["Z01"]}],
+        },
+        ensure_ascii=False,
+    )
+
+
 class V2RegressionTests(unittest.TestCase):
     def test_openai_yaml_is_utf8(self) -> None:
         content = (ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8")
@@ -88,6 +112,24 @@ class V2RegressionTests(unittest.TestCase):
         report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
 
         self.assertIn("PLACEHOLDER_FOUND", issue_codes(report))
+
+    def test_markdown_identifier_must_exist_in_structured_sources(self) -> None:
+        files = complete_phase2_files()
+        add_structured_files(files)
+        files["03_企业展厅概念策划母稿.md"] += "\n未知展区 Z99\n"
+
+        report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
+
+        self.assertIn("MARKDOWN_ID_UNKNOWN", issue_codes(report))
+
+    def test_key_zone_requires_ppt_and_render_prompt_mapping(self) -> None:
+        files = complete_phase2_files()
+        add_structured_files(files)
+        files["03_企业展厅概念策划母稿.md"] += "\n展项 X01，路线 R01。\n"
+
+        report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
+
+        self.assertIn("KEY_ZONE_RENDER_MAPPING_MISSING", issue_codes(report))
 
 
 if __name__ == "__main__":
