@@ -19,6 +19,10 @@
       "id": "A01",
       "name": "【填写核心受众】",
       "scenario": "unknown",
+      "expected_visit_minutes": {
+        "min": null,
+        "max": null
+      },
       "core_question": "unknown",
       "leave_memory": "unknown",
       "desired_action": "unknown"

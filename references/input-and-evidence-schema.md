@@ -18,7 +18,7 @@ storyline, evidence, design_references, conflicts, assumptions, open_questions
 
 ## 项目与受众
 
-`project` 至少包含项目名、企业名、建设目标、预计参观时长区间、预算档位和适配器。每个 `A##` 包含名称、接待场景、核心疑问、离场记忆、期望行动和路线模式。
+`project` 至少包含项目名、企业名、建设目标、项目总体预计参观时长区间、预算档位和适配器。每个 `A##` 包含名称、接待场景、`expected_visit_minutes={min,max}`、核心疑问、离场记忆、期望行动和路线模式。多路线项目必须记录各受众时长，供路线校验使用。
 
 ## 品牌与空间资料
 

@@ -15,6 +15,15 @@
 - 内容更新、维护、人员操作、清洁、能耗和停机风险。
 - 包容性提醒、专业复核事项和适用预算档位。
 
+机器必填键：
+
+```text
+id, zone_id, objective, content, media_type, low_tech_fallback,
+operations, inclusion_notes, budget_tiers
+```
+
+可在这些键之外补充访客动作、反馈、时长、证据和风险，但不能用同义键替代必填键。
+
 ## 载体选择
 
 | 内容任务 | 优先载体 | 谨慎使用 |

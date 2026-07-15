@@ -39,6 +39,18 @@
 
 每条路线包含入口、出口、展区序列、可跳过节点、停留区间、容量风险和讲解依赖。已知入口/出口时必须对应；未知时标为候选，不能声明确定路线。
 
+机器字段固定为：
+
+```text
+space_program: allocation_mode, placement_status
+routes[]: id, name, audience_ids, zone_ids, start, end, duration_minutes{min,max}
+zones[]: id, name, priority, area_pct 或 area_range_pct{min,max},
+         adjacent_to, exhibit_ids, visual_direction, wayfinding,
+         render_handoff, open_questions
+```
+
+`duration_minutes` 必须是对象，不能写成数组或文本。路线存在 `audience_ids` 时优先使用对应受众的 `expected_visit_minutes`；没有受众级目标时才回退项目总体区间。
+
 ## 节奏节点
 
 至少检查：
