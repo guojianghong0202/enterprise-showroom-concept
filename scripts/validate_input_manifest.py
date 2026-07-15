@@ -188,6 +188,9 @@ def validate_manifest(data: dict[str, Any], stage: str) -> dict[str, Any]:
     evidence_ids: set[str] = set()
     for index, item in enumerate(evidence):
         item_path = f"evidence[{index}]"
+        if not isinstance(item, dict):
+            issues.append(issue("BLOCKER", "EVIDENCE_INVALID", "企业事实证据条目必须是对象", item_path))
+            continue
         evidence_id = item.get("id")
         if is_blank(evidence_id):
             issues.append(issue("BLOCKER", "EVIDENCE_ID_MISSING", "证据条目缺少编号", f"{item_path}.id"))

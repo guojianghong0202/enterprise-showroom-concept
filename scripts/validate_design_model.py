@@ -264,6 +264,8 @@ def validate_phase2_detail(model: dict[str, Any], manifest: dict[str, Any], issu
 
     zones = [item for item in model.get("zones") or [] if isinstance(item, dict)]
     exhibits = [item for item in model.get("exhibits") or [] if isinstance(item, dict)]
+    routes = [item for item in model.get("routes") or [] if isinstance(item, dict)]
+    pages = [item for item in model.get("ppt_pages") or [] if isinstance(item, dict)]
     validate_area(zones, model.get("space_program") or {}, issues)
 
     confidence = (manifest.get("space") or {}).get("confidence", "unknown")
@@ -307,7 +309,7 @@ def validate_phase2_detail(model: dict[str, Any], manifest: dict[str, Any], issu
 
     expected = (manifest.get("project") or {}).get("expected_visit_minutes") or {}
     expected_min, expected_max = expected.get("min"), expected.get("max")
-    for index, route in enumerate(model.get("routes") or []):
+    for index, route in enumerate(routes):
         duration = route.get("duration_minutes") or {}
         if isinstance(expected_min, (int, float)) and isinstance(expected_max, (int, float)):
             if duration.get("min", float("inf")) > expected_min or duration.get("max", float("-inf")) < expected_max:
@@ -323,7 +325,7 @@ def validate_phase2_detail(model: dict[str, Any], manifest: dict[str, Any], issu
 
     space = manifest.get("space") or {}
     if space.get("entrances") and space.get("exits"):
-        for index, route in enumerate(model.get("routes") or []):
+        for index, route in enumerate(routes):
             if route.get("start") not in space["entrances"] or route.get("end") not in space["exits"]:
                 issues.append(
                     make_issue(
@@ -336,7 +338,7 @@ def validate_phase2_detail(model: dict[str, Any], manifest: dict[str, Any], issu
                 )
 
     key_zones = {zone.get("id") for zone in zones if zone.get("priority") == "key"}
-    mapped_zones = {zone_id for page in model.get("ppt_pages") or [] for zone_id in (page.get("zone_ids") or [])}
+    mapped_zones = {zone_id for page in pages for zone_id in (page.get("zone_ids") or [])}
     if missing := sorted(key_zones - mapped_zones):
         issues.append(
             make_issue(
