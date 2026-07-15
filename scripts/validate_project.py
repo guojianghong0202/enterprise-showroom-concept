@@ -28,7 +28,14 @@ def aggregate_reports(reports: list[dict[str, Any]], *, stage: str, adapters: li
     summary = summarize_issues(issues)
     status = status_from_summary(summary)
     score = max(0, 100 - summary["blockers"] * 10 - summary["warnings"] * 2)
-    final_status = "概念提案可用" if status != "FAIL" and score >= 80 else ("需修正后复验" if status == "FAIL" else "可用但需复核")
+    if status == "FAIL":
+        final_status = "需修正后复验"
+    elif status == "PASS_WITH_WARNINGS":
+        final_status = "可用但需复核"
+    elif score >= 80:
+        final_status = "概念提案可用"
+    else:
+        final_status = "需提升质量后复验"
     return {
         "status": status,
         "final_status": final_status,
