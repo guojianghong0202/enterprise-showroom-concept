@@ -290,6 +290,36 @@ class DesignModelV2Tests(unittest.TestCase):
         report = validate_design_model(data, manifest(), "phase2")
         self.assertIn("SELECTED_STORY_INVALID", {item["code"] for item in report["issues"]})
 
+    def test_route_duration_uses_audience_specific_targets(self) -> None:
+        data = phase2_model()
+        data["routes"][0]["audience_ids"] = ["A01"]
+        data["routes"][0]["duration_minutes"] = {"min": 18, "max": 22}
+        data["routes"].append(
+            {
+                "id": "R02",
+                "name": "深度路线",
+                "audience_ids": ["A02"],
+                "zone_ids": ["Z01", "Z02"],
+                "start": "入口",
+                "end": "出口",
+                "duration_minutes": {"min": 40, "max": 47},
+            }
+        )
+        project_manifest = manifest()
+        project_manifest["project"]["expected_visit_minutes"] = {"min": 20, "max": 45}
+        project_manifest["audiences"] = [
+            {"id": "A01", "expected_visit_minutes": {"min": 18, "max": 22}},
+            {"id": "A02", "expected_visit_minutes": {"min": 40, "max": 47}},
+        ]
+        report = validate_design_model(data, project_manifest, "phase2")
+        self.assertNotIn("ROUTE_DURATION_MISMATCH", {item["code"] for item in report["issues"]})
+
+    def test_invalid_route_duration_format_is_blocked_without_crashing(self) -> None:
+        data = phase2_model()
+        data["routes"][0]["duration_minutes"] = [20, 30]
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertIn("ROUTE_DURATION_FORMAT_INVALID", {item["code"] for item in report["issues"]})
+
 
 if __name__ == "__main__":
     unittest.main()
