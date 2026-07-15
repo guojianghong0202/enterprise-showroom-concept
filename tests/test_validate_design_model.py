@@ -284,6 +284,12 @@ class DesignModelV2Tests(unittest.TestCase):
         report = validate_design_model(data, manifest(), "phase2")
         self.assertIn("OBJECT_INVALID", {item["code"] for item in report["issues"]})
 
+    def test_selected_story_object_is_reported_instead_of_crashing(self) -> None:
+        data = phase2_model()
+        data["selected_story"] = {"id": "S01"}
+        report = validate_design_model(data, manifest(), "phase2")
+        self.assertIn("SELECTED_STORY_INVALID", {item["code"] for item in report["issues"]})
+
 
 if __name__ == "__main__":
     unittest.main()
