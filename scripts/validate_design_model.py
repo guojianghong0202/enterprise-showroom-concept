@@ -125,7 +125,16 @@ def validate_references(
             )
 
     selected = model.get("selected_story")
-    if selected and selected not in story_ids:
+    if selected and not isinstance(selected, str):
+        issues.append(
+            make_issue(
+                "BLOCKER",
+                "SELECTED_STORY_INVALID",
+                "selected_story 必须是 S## 字符串编号。",
+                json_path="selected_story",
+            )
+        )
+    elif selected and selected not in story_ids:
         issues.append(
             make_issue(
                 "BLOCKER",
