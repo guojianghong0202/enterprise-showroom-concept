@@ -227,6 +227,16 @@ class InputManifestV2Tests(unittest.TestCase):
         self.assertIn("SPACE_CONFIDENCE_LOW", {item["code"] for item in report["issues"]})
         self.assertEqual(report["status"], "PASS_WITH_WARNINGS")
 
+    def test_nonempty_but_unreviewed_floor_plan_is_not_treated_as_verified(self) -> None:
+        data = complete_v2_manifest()
+        data["space"]["confidence"] = "medium"
+        data["space"]["floor_plan"] = {
+            "availability": "用户说明有平面图",
+            "inspection_status": "本次未收到文件，未检查尺寸链",
+        }
+        report = validate_manifest(data, "phase1")
+        self.assertIn("FLOOR_PLAN_UNREVIEWED", {item["code"] for item in report["issues"]})
+
 
 if __name__ == "__main__":
     unittest.main()
