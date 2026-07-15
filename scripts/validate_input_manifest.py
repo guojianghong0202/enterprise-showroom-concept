@@ -158,6 +158,15 @@ def validate_manifest(data: dict[str, Any], stage: str) -> dict[str, Any]:
     space = data.get("space") or {}
     if space.get("confidence", "unknown") not in ALLOWED_SPACE_CONFIDENCE:
         issues.append(issue("BLOCKER", "SPACE_CONFIDENCE_INVALID", "空间置信度必须为 high、medium、low 或 unknown", "space.confidence"))
+    elif space.get("confidence", "unknown") in {"low", "unknown"}:
+        issues.append(
+            issue(
+                "WARNING",
+                "SPACE_CONFIDENCE_LOW",
+                "空间置信度较低，只能输出邻接、面积区间与候选路线，不得声明确定落位",
+                "space.confidence",
+            )
+        )
     if is_blank(space.get("area_sqm")) or is_blank(space.get("ceiling_height_m")):
         issues.append(
             issue(
