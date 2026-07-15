@@ -1,0 +1,227 @@
+{
+  "schema_version": "2.0",
+  "project_id": "xinghan-showroom",
+  "derived_from_manifest": "project-manifest.json",
+  "phase": "phase2",
+  "strategy": {
+    "audience_ids": [
+      "A01"
+    ],
+    "core_claim": "以可追溯的工艺与质量证据建立交付信任",
+    "key_messages": [
+      "工艺形成能力",
+      "质量验证能力"
+    ]
+  },
+  "story_candidates": [
+    {
+      "id": "S01",
+      "title": "能力如何形成",
+      "audience_ids": [
+        "A01"
+      ],
+      "proposition": "沿工艺与验证链理解稳定交付",
+      "spatial_archetype": "递进式能力链",
+      "signature_exhibit": "透明工艺验证模型",
+      "emotional_arc": "理解—验证—信任",
+      "visual_motif": "精密层叠",
+      "evidence_ids": [
+        "E001"
+      ],
+      "advantages": [
+        "证据推进清晰"
+      ],
+      "risks": [
+        "需要高质量样件"
+      ]
+    },
+    {
+      "id": "S02",
+      "title": "客户价值如何发生",
+      "audience_ids": [
+        "A01"
+      ],
+      "proposition": "从客户挑战进入解决方案与案例",
+      "spatial_archetype": "场景岛链",
+      "signature_exhibit": "案例推演台",
+      "emotional_arc": "共鸣—发现—行动",
+      "visual_motif": "连接网络",
+      "evidence_ids": [
+        "E001"
+      ],
+      "advantages": [
+        "商业沟通直接"
+      ],
+      "risks": [
+        "案例授权需确认"
+      ]
+    }
+  ],
+  "selected_story": "S01",
+  "space_program": {
+    "allocation_mode": "range",
+    "placement_status": "conceptual"
+  },
+  "routes": [
+    {
+      "id": "R01",
+      "name": "重点客户主路线",
+      "zone_ids": [
+        "Z01",
+        "Z02"
+      ],
+      "start": "东侧主入口",
+      "end": "西侧出口",
+      "duration_minutes": {
+        "min": 20,
+        "max": 30
+      }
+    }
+  ],
+  "zones": [
+    {
+      "id": "Z01",
+      "name": "能力序厅",
+      "priority": "key",
+      "area_range_pct": {
+        "min": 35,
+        "max": 45
+      },
+      "adjacent_to": [
+        "Z02"
+      ],
+      "exhibit_ids": [
+        "X01"
+      ],
+      "visual_direction": "以精密层叠建立品牌第一记忆",
+      "wayfinding": "入口识别与第一章节门槛",
+      "render_handoff": "入口人眼平视与首个记忆点",
+      "open_questions": [
+        "入口净宽由专业团队复核"
+      ]
+    },
+    {
+      "id": "Z02",
+      "name": "工艺验证厅",
+      "priority": "key",
+      "area_range_pct": {
+        "min": 55,
+        "max": 65
+      },
+      "adjacent_to": [
+        "Z01"
+      ],
+      "exhibit_ids": [
+        "X02"
+      ],
+      "visual_direction": "以样件、剖切模型和验证数据形成高潮",
+      "wayfinding": "能力链方向确认与出口行动",
+      "render_handoff": "核心展项广角与样件近景",
+      "open_questions": [
+        "模型尺寸与设备安装由深化团队确认"
+      ]
+    }
+  ],
+  "exhibits": [
+    {
+      "id": "X01",
+      "zone_id": "Z01",
+      "objective": "建立能力来自连续验证的第一认知",
+      "content": "总主张与质量流程摘要",
+      "media_type": "graphic",
+      "low_tech_fallback": "静态主张墙和工艺索引",
+      "operations": "季度复核内容，品牌团队负责",
+      "inclusion_notes": "保持文字层级与对比度并复核观看距离",
+      "budget_tiers": [
+        "basic",
+        "standard",
+        "flagship"
+      ]
+    },
+    {
+      "id": "X02",
+      "zone_id": "Z02",
+      "objective": "让访客理解工艺与质量如何支持稳定交付",
+      "content": "样件、工艺步骤与质量证据",
+      "media_type": "model",
+      "low_tech_fallback": "剖切模型、实物样件和分层图文",
+      "operations": "年度更换样件，每半年复核数据",
+      "inclusion_notes": "提供不依赖触控和听觉的等价说明",
+      "budget_tiers": [
+        "standard",
+        "flagship"
+      ]
+    }
+  ],
+  "visual_system": {
+    "brand_translation": "把精密制造转译为可读的层叠结构与真实材料",
+    "anti_generic_check": "形态与工艺验证链和样件关系绑定"
+  },
+  "wayfinding_system": {
+    "levels": [
+      "入口",
+      "章节",
+      "方向",
+      "位置确认",
+      "出口"
+    ]
+  },
+  "budget_strategies": [
+    {
+      "tier": "basic",
+      "cost_drivers": [
+        "模块化图文"
+      ],
+      "maintenance": "低"
+    },
+    {
+      "tier": "standard",
+      "cost_drivers": [
+        "实物与剖切模型"
+      ],
+      "maintenance": "中"
+    },
+    {
+      "tier": "flagship",
+      "cost_drivers": [
+        "动态工艺演示"
+      ],
+      "maintenance": "高，保留静态降级"
+    }
+  ],
+  "accessibility_review": {
+    "route": "完成概念级连续性与替代体验检查",
+    "professional_review": [
+      "通行、观看距离、触达与设备安装"
+    ]
+  },
+  "ppt_pages": [
+    {
+      "id": "P01",
+      "decision_question": "为什么该企业值得信任",
+      "story_id": "S01",
+      "zone_ids": [
+        "Z01"
+      ],
+      "exhibit_ids": [
+        "X01"
+      ],
+      "source_section": "项目定位"
+    },
+    {
+      "id": "P02",
+      "decision_question": "能力如何被验证",
+      "story_id": "S01",
+      "zone_ids": [
+        "Z02"
+      ],
+      "exhibit_ids": [
+        "X02"
+      ],
+      "source_section": "展区内容卡"
+    }
+  ],
+  "assumptions": [],
+  "risks": [],
+  "open_questions": []
+}

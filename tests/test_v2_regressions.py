@@ -48,6 +48,11 @@ class FakeRoot:
         return "<memory-package>"
 
 
+class FakeMissingRoot(FakeRoot):
+    def is_dir(self) -> bool:
+        return False
+
+
 def complete_phase2_files() -> dict[str, str]:
     return {
         "01_需求诊断与证据台账.md": "## 需求诊断\n内容\n## 证据台账\n[E001]\n",
@@ -130,6 +135,47 @@ class V2RegressionTests(unittest.TestCase):
         report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
 
         self.assertIn("KEY_ZONE_RENDER_MAPPING_MISSING", issue_codes(report))
+
+    def test_missing_directory_file_and_section_are_blocked(self) -> None:
+        report = VALIDATOR.validate_package(FakeMissingRoot({}), "phase2")
+        self.assertIn("PACKAGE_NOT_FOUND", issue_codes(report))
+
+        files = complete_phase2_files()
+        files.pop("04_PPT逐页提案脚本.md")
+        files["01_需求诊断与证据台账.md"] = "## 需求诊断\n内容\n"
+        report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
+        codes = issue_codes(report)
+        self.assertIn("MISSING_DELIVERABLE", codes)
+        self.assertIn("REQUIRED_SECTION_MISSING", codes)
+
+    def test_empty_table_and_affirmative_engineering_claim_are_blocked(self) -> None:
+        files = complete_phase2_files()
+        files["01_需求诊断与证据台账.md"] += "\n| | |\n"
+        files["03_企业展厅概念策划母稿.md"] += "\n本方案可直接施工。\n"
+        report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
+        codes = issue_codes(report)
+        self.assertIn("EMPTY_TABLE_ROW_FOUND", codes)
+        self.assertIn("BOUNDARY_VIOLATION", codes)
+
+    def test_missing_evidence_and_concept_label_are_reported(self) -> None:
+        files = complete_phase2_files()
+        files["03_企业展厅概念策划母稿.md"] = files["03_企业展厅概念策划母稿.md"].replace("[E001]", "无证据编号")
+        files["05_分区效果图提示词.md"] = "## 展区提示词\n空间方向\n"
+        report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
+        codes = issue_codes(report)
+        self.assertIn("EVIDENCE_REFERENCE_MISSING", codes)
+        self.assertIn("CONCEPT_LABEL_MISSING", codes)
+
+    def test_invalid_structured_json_is_blocked(self) -> None:
+        files = complete_phase2_files()
+        files["project-manifest.json"] = "{invalid"
+        files["design-model.json"] = "[]"
+        report = VALIDATOR.validate_package(FakeRoot(files), "phase2")
+        self.assertIn("STRUCTURED_FILE_INVALID", issue_codes(report))
+
+    def test_missing_structured_files_enters_v1_compatibility_mode(self) -> None:
+        report = VALIDATOR.validate_package(FakeRoot(complete_phase2_files()), "phase2")
+        self.assertIn("V1_COMPATIBILITY_MODE", issue_codes(report))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,42 @@
+name: validate-v2
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.14"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install test tools
+        run: python -m pip install --disable-pip-version-check coverage ruff
+
+      - name: Compile Python
+        run: python -m compileall -q scripts tests
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Unit and integration tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Core validator coverage
+        run: |
+          python -m coverage erase
+          python -m coverage run -m unittest discover -s tests -p "test_*.py"
+          python -m coverage report --fail-under=90
+
+      - name: Golden phase2 package
+        run: python scripts/validate_project.py tests/fixtures/golden-phase2 --stage phase2 --no-write

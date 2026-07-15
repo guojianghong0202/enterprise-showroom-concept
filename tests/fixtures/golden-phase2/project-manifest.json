@@ -1,0 +1,85 @@
+{
+  "schema_version": "2.0",
+  "project": {
+    "id": "xinghan-showroom",
+    "name": "星瀚精工体验中心",
+    "company_name": "星瀚精工",
+    "objective": "帮助重点客户理解精密制造能力并建立合作信任",
+    "expected_visit_minutes": {
+      "min": 20,
+      "max": 30
+    },
+    "budget_tier": "standard",
+    "adapters": [
+      "technology-manufacturing"
+    ]
+  },
+  "audiences": [
+    {
+      "id": "A01",
+      "name": "重点客户技术与采购团队",
+      "scenario": "讲解接待",
+      "core_question": "企业如何稳定交付高精度产品",
+      "leave_memory": "能力来自工艺、质量和案例的连续验证",
+      "desired_action": "进入技术交流与项目洽谈"
+    }
+  ],
+  "brand_materials": [
+    {
+      "name": "企业介绍",
+      "path": "资料/企业介绍.pdf",
+      "status": "readable"
+    }
+  ],
+  "space": {
+    "area_sqm": 300,
+    "ceiling_height_m": 4.2,
+    "floor_plan": "资料/展厅平面图.pdf",
+    "site_photos": [
+      "资料/现场照片01.jpg"
+    ],
+    "entrances": [
+      "东侧主入口"
+    ],
+    "exits": [
+      "西侧出口"
+    ],
+    "confidence": "high"
+  },
+  "constraints": [
+    "北侧固定柱网保留"
+  ],
+  "storyline": {
+    "confirmed": true,
+    "selected_id": "S01",
+    "confirmed_at": "2026-07-15T15:00:00+08:00",
+    "confirmation_note": "用户选择 S01，以能力形成和质量验证为主线。"
+  },
+  "evidence": [
+    {
+      "id": "E001",
+      "claim": "企业建立了覆盖关键工序的质量验证流程",
+      "source_type": "user_formal_material",
+      "source": "企业介绍.pdf",
+      "locator": "第 8–10 页",
+      "published_at": "2026-01",
+      "accessed_at": "2026-07-15",
+      "status": "已核实"
+    }
+  ],
+  "design_references": [
+    {
+      "id": "D001",
+      "source_type": "public_cultural_institution",
+      "source": "Smithsonian Guide to Exhibit Development",
+      "purpose": "展项目标与开发流程",
+      "takeaway": "先定义访客认知目标，再选择展示载体",
+      "limitations": "只作为方法参考，不证明企业事实",
+      "locator": "Exhibit development process",
+      "accessed_at": "2026-07-15"
+    }
+  ],
+  "conflicts": [],
+  "assumptions": [],
+  "open_questions": []
+}

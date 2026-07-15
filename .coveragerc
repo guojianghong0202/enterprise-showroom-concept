@@ -1,0 +1,12 @@
+[run]
+source = scripts
+omit =
+    scripts/init_project.py
+
+[report]
+fail_under = 90
+show_missing = true
+exclude_also =
+    def main\(\) -> int:
+    except ImportError:
+    if __name__ == ["']__main__["']:

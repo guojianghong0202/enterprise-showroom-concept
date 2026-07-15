@@ -4,4 +4,6 @@ __pycache__/
 Thumbs.db
 .idea/
 .vscode/
-
+.coverage
+coverage.xml
+htmlcov/
